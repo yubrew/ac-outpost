@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened, edited, ready_for_review]
 
 jobs:
-  test:
+  Coverage:
     name: coverage
     runs-on: ubuntu-latest
     container:
@@ -35,4 +35,46 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: `# Coverage\n\n${summary}\n\n\`\`\`\n${coverage}\n\`\`\``
+            })
+  linter:
+    name: linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install rust and cargo
+        run:  curl https://sh.rustup.rs -sSf | sh
+      - name: Run Clippy and Format
+        id: linter
+        run: /
+            OUTPUT=$(cargo clippy --all-targets -- -D warnings)
+            echo "::set-output name=clippy::$OUTPUT"
+            OUTPUT=$(cargo fmt --all -- --check --verbose)
+            echo "::set-output name=fmt::$OUTPUT"
+      - name: Comment PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const clippy = `${{steps.linter.outputs.clippy}}`
+            const fmt = `${{steps.linter.outputs.fmt}}`
+            const body = `
+                # Linter
+                \n\n
+                \`\`\`
+                    ${clippy}
+                \`\`\`
+                ## Clippy
+                \n\n
+                \`\`\`
+                    ${fmt}
+                \`\`\`
+            `;
+            const issue_number = context.issue.number
+            github.issues.createComment({
+                issue_number: issue_number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
             })
