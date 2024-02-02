@@ -60,22 +60,11 @@ jobs:
           script: |
             const clippy = `${{steps.linter.outputs.clippy}}`
             const fmt = `${{steps.linter.outputs.fmt}}`
-            const body = `
-                # Linter
-                \n\n
-                \`\`\`
-                    ${clippy}
-                \`\`\`
-                ## Clippy
-                \n\n
-                \`\`\`
-                    ${fmt}
-                \`\`\`
-            `;
+   
             const issue_number = context.issue.number
             github.issues.createComment({
                 issue_number: issue_number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: body
+                body: `# Linter\n\n\`\`\`\n${clippy}\n\`\`\`\n #Format \n\`\`\`\n${fmt}\n\`\`\``
             })
