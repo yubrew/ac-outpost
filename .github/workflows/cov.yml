@@ -43,7 +43,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Install rust and cargo
-        run:  curl https://sh.rustup.rs -sSf | sh
+        run:  curl https://sh.rustup.rs -sSf | sh -s -- -y
       - name: Run Clippy and Format
         id: linter
         run: /
