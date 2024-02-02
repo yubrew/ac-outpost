@@ -46,7 +46,7 @@ jobs:
         run:  curl https://sh.rustup.rs -sSf | sh -s -- -y
       - name: Run Clippy and Format
         id: linter
-        run: /
+        run: |
             CLIPPY_OUTPUT=$(cargo clippy --all-targets -- -D warnings || true)
             echo "::set-output name=clippy::$CLIPPY_OUTPUT"
             FMT_OUTPUT=$(cargo fmt --all -- --check --verbose || true)
