@@ -48,9 +48,9 @@ jobs:
       - name: Run Clippy and Format
         id: linter
         run: |
-            CLIPPY_OUTPUT=$(cargo clippy --all-targets -- -D warnings 2>&1 || true)
+            CLIPPY_OUTPUT=$(printf "%q" "$(cargo clippy --all-targets -- -D warnings 2>&1 || true)")
             echo "::set-output name=clippy::$CLIPPY_OUTPUT"
-            FMT_OUTPUT=$(cargo fmt --all -- --check --verbose 2>&1 || true)
+            FMT_OUTPUT=$(printf "%q" "$(cargo fmt --all -- --check --verbose 2>&1 || true)")
             echo "::set-output name=fmt::$FMT_OUTPUT"
       - name: Use clippy output
         run: |
@@ -62,9 +62,15 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const clippy = `${{steps.linter.outputs.clippy}}`
-            const fmt = `${{steps.linter.outputs.fmt}}`
-   
+            function unescape(s) {
+                return s.replace(/\\'/g, "'")
+                        .replace(/\\"/g, '"')
+                        .replace(/\\`/g, '`')
+                        .replace(/\\\\/g, '\\');
+            }
+            const clippy = unescape(`${{steps.linter.outputs.clippy}}`);
+            const fmt = unescape(`${{steps.linter.outputs.fmt}}`);
+           
             const issue_number = context.issue.number
             github.issues.createComment({
                 issue_number: issue_number,
