@@ -1,0 +1,33 @@
+name: coverage
+
+on: [pull_request, push]
+
+jobs:
+  test:
+    name: coverage
+    runs-on: ubuntu-latest
+    container:
+      image: xd009642/tarpaulin:0.22.0
+      options: --security-opt seccomp=unconfined
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Generate code coverage
+        id: coverage
+        run: |
+          OUTPUT=$(cargo tarpaulin --verbose --workspace --timeout 120 --out xml --avoid-cfg-tarpaulin)
+          echo "::set-output name=coverage::$OUTPUT"
+      - name: Comment PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const output = `${{steps.coverage.outputs.coverage}}`
+            const issue_number = context.issue.number
+            github.issues.createComment({
+              issue_number: issue_number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
