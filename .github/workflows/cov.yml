@@ -48,9 +48,9 @@ jobs:
       - name: Run Clippy and Format
         id: linter
         run: |
-            CLIPPY_OUTPUT=$(printf "%q" "$(cargo clippy --all-targets -- -D warnings 2>&1 || true)")
+            CLIPPY_OUTPUT=$(cargo clippy --all-targets -- -D warnings 2>&1 || true)
             echo "::set-output name=clippy::$CLIPPY_OUTPUT"
-            FMT_OUTPUT=$(printf "%q" "$(cargo fmt --all -- --check --verbose 2>&1 || true)")
+            FMT_OUTPUT=$(cargo fmt --all -- --check --verbose 2>&1 || true)
             echo "::set-output name=fmt::$FMT_OUTPUT"
       - name: Use clippy output
         run: |
