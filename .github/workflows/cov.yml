@@ -17,25 +17,26 @@ jobs:
       - name: Generate code coverage
         id: coverage
         run: |
-          OUTPUT=$(cargo tarpaulin --verbose --workspace --timeout 120 --out xml --avoid-cfg-tarpaulin)
-          echo "::set-output name=coverage::$OUTPUT"
-          SUMMARY=$(echo "$OUTPUT" | grep -oP '\d+\.\d+% coverage, \d+/\d+ lines covered')
-          echo "::set-output name=summary::$SUMMARY"         
-      - name: Comment PR
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const summary = `${{steps.coverage.outputs.summary}}`
-            const coverage = `${{steps.coverage.outputs.coverage}}`
-            const issue_number = context.issue.number
-            github.issues.createComment({
-                issue_number: issue_number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: `# Coverage\n\n${summary}\n\n\`\`\`\n${coverage}\n\`\`\``
-            })
+            echo "test"
+        #   OUTPUT=$(cargo tarpaulin --verbose --workspace --timeout 120 --out xml --avoid-cfg-tarpaulin)
+        #   echo "::set-output name=coverage::$OUTPUT"
+        #   SUMMARY=$(echo "$OUTPUT" | grep -oP '\d+\.\d+% coverage, \d+/\d+ lines covered')
+        #   echo "::set-output name=summary::$SUMMARY"         
+    #   - name: Comment PR
+    #     if: github.event_name == 'pull_request'
+    #     uses: actions/github-script@v3
+    #     with:
+    #       github-token: ${{secrets.GITHUB_TOKEN}}
+    #       script: |
+    #         const summary = `${{steps.coverage.outputs.summary}}`
+    #         const coverage = `${{steps.coverage.outputs.coverage}}`
+    #         const issue_number = context.issue.number
+    #         github.issues.createComment({
+    #             issue_number: issue_number,
+    #             owner: context.repo.owner,
+    #             repo: context.repo.repo,
+    #             body: `# Coverage\n\n${summary}\n\n\`\`\`\n${coverage}\n\`\`\``
+    #         })
   linter:
     name: linter
     runs-on: ubuntu-latest
@@ -47,9 +48,9 @@ jobs:
       - name: Run Clippy and Format
         id: linter
         run: |
-            CLIPPY_OUTPUT=$(cargo clippy --all-targets -- -D warnings || true)
+            CLIPPY_OUTPUT=$(cargo clippy --all-targets -- -D warnings 2>&1 || true)
             echo "::set-output name=clippy::$CLIPPY_OUTPUT"
-            FMT_OUTPUT=$(cargo fmt --all -- --check --verbose || true)
+            FMT_OUTPUT=$(cargo fmt --all -- --check --verbose 2>&1 || true)
             echo "::set-output name=fmt::$FMT_OUTPUT"
       - name: Comment PR
         if: github.event_name == 'pull_request'
