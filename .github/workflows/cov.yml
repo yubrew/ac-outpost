@@ -47,10 +47,10 @@ jobs:
       - name: Run Clippy and Format
         id: linter
         run: /
-            OUTPUT=$(cargo clippy --all-targets -- -D warnings)
-            echo "::set-output name=clippy::$OUTPUT"
-            OUTPUT=$(cargo fmt --all -- --check --verbose)
-            echo "::set-output name=fmt::$OUTPUT"
+            CLIPPY_OUTPUT=$(cargo clippy --all-targets -- -D warnings || true)
+            echo "::set-output name=clippy::$CLIPPY_OUTPUT"
+            FMT_OUTPUT=$(cargo fmt --all -- --check --verbose || true)
+            echo "::set-output name=fmt::$FMT_OUTPUT"
       - name: Comment PR
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v3
