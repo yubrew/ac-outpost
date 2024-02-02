@@ -1,6 +1,8 @@
 name: coverage
 
-on: [pull_request, push]
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, ready_for_review]
 
 jobs:
   test:
@@ -18,7 +20,7 @@ jobs:
           OUTPUT=$(cargo tarpaulin --verbose --workspace --timeout 120 --out xml --avoid-cfg-tarpaulin)
           echo "::set-output name=coverage::$OUTPUT"
           SUMMARY=$(echo "$OUTPUT" | grep -oP '\d+\.\d+% coverage, \d+/\d+ lines covered')
-          echo "::set-output name=coverage::$SUMMARY"         
+          echo "::set-output name=summary::$SUMMARY"         
       - name: Comment PR
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v3
