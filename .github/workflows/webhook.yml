@@ -26,7 +26,7 @@ jobs:
             let commentBody;
 
             if (payload.status === 'success') {
-              commentBody = '```' + payload.markdown + '```';
+              commentBody = payload.markdown;
             } else if (payload.status === 'fail') {
               commentBody = `The operation failed due to: ${payload.reason}`;
             } else if (payload.status === 'timeout') {
