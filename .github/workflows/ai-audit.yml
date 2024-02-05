@@ -1,4 +1,4 @@
-name: AI AUDIT CHECK
+name: Rust File Aggregator
 
 on:
   pull_request:
@@ -33,7 +33,9 @@ jobs:
           fi
           file_content=$(jq -Rs . < rust.md)
           echo "{\"prnum\":\"$PRNUM\", \"file_content\":$file_content}" > data.json
-          curl -X POST -H "Content-Type: application/json" -d @data.json ${{ secrets.API_URL }}
+          response=$(curl -s -X POST -H "Content-Type: application/json" -d @data.json ${{ secrets.API_URL }})
+          job_id=$(echo "$response" | jq -r '.job_id')
+          curl -X POST -H "Content-Type: application/json" -d "{\"job_id\": \"$job_id\", \"prnum\": \"$PRNUM\"}" ${{ secrets.WEBHOOK_API_URL }}
       - name: Comment on PR
         uses: actions/github-script@v5
         with:
