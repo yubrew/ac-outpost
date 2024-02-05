@@ -1,0 +1,7 @@
+# Ignore all files
+*
+
+# But don't ignore these files
+!api.py
+!cron.py
+!.gitignore
