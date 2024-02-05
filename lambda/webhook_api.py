@@ -28,8 +28,8 @@ def lambda_handler(event, context):
     print("job_id", job_id)
     print("pr_num", prnum)
 
-    # Check if the job_id is not empty
-    if not job_id:
+    # Check if the job_id and prnum is empty
+    if not job_id or not prnum:
         return {
             'statusCode': 400,
             'body': json.dumps('Invalid input')
