@@ -38,10 +38,10 @@ def lambda_handler(event, context):
         # Update the status and data in DynamoDB
         api_response = json.loads(response.data)
         status = api_response['status']
-        markdown = api_response['markdown']
 
         # if status is completed update the status.
         if status != "pending":
+            markdown = api_response['markdown']
             response = table.update_item(
                 Key={
                     'job_id': job_id
