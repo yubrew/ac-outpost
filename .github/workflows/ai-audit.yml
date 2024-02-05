@@ -24,7 +24,8 @@ jobs:
         run: head rust.md
       - name: print the secrets.API_URL
         run: echo ${{ secrets.API_URL }}
-
+      - name: print the secrets.WEBHOOK_API_URL
+        run: echo ${{ secrets.WEBHOOK_API_URL }}
       - name: Send file to API
         run: |
           PRNUM=-1
