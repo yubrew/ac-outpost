@@ -10,7 +10,7 @@ def lambda_handler(event, context):
 
     # Store the PRNUM, job id, timestamp, and file content in DynamoDB
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('data')
+    table = dynamodb.Table('webhook_data')
 
     # Get all the items from the table where status = pending
     response = table.scan(
