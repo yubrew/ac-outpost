@@ -63,7 +63,8 @@ def lambda_handler(event, context):
                 "client_payload": {
                     "prnum": prnum,
                     "status": status,
-                    "markdown": markdown
+                    "markdown": markdown,
+                    'reason': api_response['reason']
                 }
             }
 
