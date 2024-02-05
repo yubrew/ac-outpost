@@ -1,0 +1,11 @@
+# Ignore all files
+*
+
+# Don't ignore these files
+!.gitignore
+!api.py
+!api_status_check.py
+!cron.py
+!webhook.py
+!README.md
+!webhook_api.py
