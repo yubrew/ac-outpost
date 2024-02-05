@@ -1,0 +1,43 @@
+name: Webhook Workflow
+on:
+  repository_dispatch:
+    types: [webhook-event]
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Check PR number
+        id: check
+        run: |
+          if [ -z "${{ github.event.client_payload.prnum }}" ]; then
+            echo "PR number is required"
+            exit 1
+          fi
+      - name: Comment on PR
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const payload = context.payload.client_payload;
+            const prNumber = payload.prnum;
+            let commentBody;
+
+            if (payload.status === 'success') {
+              commentBody = payload.markdown;
+            } else if (payload.status === 'fail') {
+              commentBody = `The operation failed due to: ${payload.reason}`;
+            } else if (payload.status === 'timeout') {
+              commentBody = `The operation timed out.`;
+            } else {
+              commentBody = `Unknown status: ${payload.status}`;
+            }
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: commentBody
+            });
