@@ -1,11 +1,10 @@
 # Ignore all files
 *
 
-# But don't ignore these files
-!api.py
-!cron.py
-!api_status_check.py
-!webhook_api.py
-!webhook.py
-!cron.py
+# Don't ignore these files
 !.gitignore
+!api.py
+!api_status_check.py
+!cron.py
+!webhook.py
+!webhook_api.py
