@@ -8,7 +8,7 @@ from boto3.dynamodb.conditions import Attr
 def lambda_handler(event, context):
     # Connect to DynamoDB
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('webhook_data')
+    table = dynamodb.Table('data')
 
     # Get items from the table where status is 'pending'
     response = table.scan(
