@@ -29,14 +29,14 @@ def lambda_handler(event, context):
         data = {
             "job_id": job_id
         }
-        encoded_data = json.dumps(data).encode('utf-8')
+        encoded_data = json.dumps(data)
         headers = {'Content-Type': 'application/json'}
         response = http.request(
             'POST', url, body=encoded_data, headers=headers)
         print("API Response", response.data)
 
         # Update the status and data in DynamoDB
-        api_response = json.loads(response.data.decode('utf-8'))
+        api_response = json.loads(response.data)
         status = api_response['status']
         markdown = api_response['markdown']
 
@@ -68,7 +68,7 @@ def lambda_handler(event, context):
                 }
             }
 
-            encoded_data = json.dumps(data).encode('utf-8')
+            encoded_data = json.dumps(data)
 
             headers = {
                 "Authorization": "token " + GitHub_Token,
