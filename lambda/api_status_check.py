@@ -78,7 +78,7 @@ With this fix, the contract will only withdraw 1 time per lockup id.
 
     # Store the PRNUM, job id, timestamp, and file content in DynamoDB
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('data')
+    table = dynamodb.Table('webhook_data')
 
     # get from dynamodb where job_id = job_id
     response = table.get_item(
@@ -87,15 +87,15 @@ With this fix, the contract will only withdraw 1 time per lockup id.
         }
     )
     # check if status is pending.
-    if response['Item']['status'] == "completed":
+    if response['Item']['status'] == "success":
         data = response['Item']
+        data['markdown'] = markdown
         return {
             'statusCode': 200,
             'body': json.dumps(data)
         }
     else:
         data = response['Item']
-        data['markdown'] = markdown
         return {
             'statusCode': 200,
             'body': json.dumps(data)
