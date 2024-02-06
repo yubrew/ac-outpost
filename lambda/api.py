@@ -53,8 +53,16 @@ def lambda_handler(event, context):
             "reason": ""
         }
     )
+    data = {
+        "job_id": job_id,
+        "timestamp": str(datetime.now()),
+        "prnum": prnum,
+        "file_content": file_content,
+        "status": "pending",
+        "reason": ""
+    }
 
     return {
         'statusCode': 200,
-        'body': json.dumps('Data stored successfully!')
+        'body': json.dumps(data)
     }

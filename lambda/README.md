@@ -48,6 +48,12 @@ This guide outlines the steps to deploy an AWS Lambda function from a zip file, 
         - `API_URL`: The will be your API url which return the status of the job.
 
     - Click "Save" to apply your changes.
+4. **Update execution time for lambda functions**
+    - In the Lambda console, select your function.
+    - In the "Configuration" tab, find the "General configuration" section and click "Edit".
+    - Update the "Timeout" to 2 minutes and 30 seconds.
+    - Click "Save" to apply your changes.
+
 
 ## Changing the Handler for Different Python Files
 

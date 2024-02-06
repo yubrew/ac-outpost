@@ -87,16 +87,18 @@ def lambda_handler(event, context):
                 'job_id': job_id
             }
         )
+        data = response['Item']
+        # delete key file_content from data
+        del data['file_content']
+
         # check if status is pending.
         if response['Item']['status'] == "success":
-            data = response['Item']
             data['markdown'] = markdown
             return {
                 'statusCode': 200,
                 'body': json.dumps(data)
             }
         else:
-            data = response['Item']
             return {
                 'statusCode': 200,
                 'body': json.dumps(data)

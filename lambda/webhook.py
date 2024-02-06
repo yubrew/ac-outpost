@@ -33,6 +33,10 @@ def lambda_handler(event, context):
         headers = {'Content-Type': 'application/json'}
         response = http.request(
             'POST', url, body=encoded_data, headers=headers)
+
+        if response.status != 200:
+            print("Error calling API")
+            continue
         print("API Response", response.data)
 
         # Update the status and data in DynamoDB
@@ -41,12 +45,19 @@ def lambda_handler(event, context):
 
         # if status is completed update the status.
         if status != "pending":
-            markdown = api_response['markdown']
+            # check if key exists.
+            if 'markdown' in api_response:
+                markdown = api_response['markdown']
+            else:
+                markdown = ""
             response = table.update_item(
                 Key={
                     'job_id': job_id
                 },
-                UpdateExpression="set status = :s",
+                UpdateExpression="set #st = :s",
+                ExpressionAttributeNames={
+                    '#st': 'status',
+                },
                 ExpressionAttributeValues={
                     ':s': status,
                 },
