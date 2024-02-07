@@ -20,8 +20,13 @@ def lambda_handler(event, context):
     for item in response['Items']:
         job_id = item['job_id']
         prnum = item['prnum']
+        repo_owner = item['repo_owner']
+        repo_name = item['repo_name']
+
         print("job_id", job_id)
         print("prnum", prnum)
+        print("repo_owner", repo_owner)
+        print("repo_name", repo_name)
 
         # Call the API to get the status and data
         url = os.environ['API_URL']
@@ -65,6 +70,7 @@ def lambda_handler(event, context):
             )
 
             # Call GitHub webhook api.
+            # build the url @TODO
             url = os.environ['WEBHOOK_API_URL']
             GitHub_Token = os.environ['GITHUB_TOKEN']
             http = urllib3.PoolManager()
