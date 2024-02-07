@@ -55,6 +55,12 @@ def lambda_handler(event, context):
                 markdown = api_response['markdown']
             else:
                 markdown = ""
+
+            if "github_token" in api_response:
+                github_token = api_response['github_token']
+            else:
+                github_token = None
+
             response = table.update_item(
                 Key={
                     'job_id': job_id
@@ -70,9 +76,15 @@ def lambda_handler(event, context):
             )
 
             # Call GitHub webhook api.
-            # build the url @TODO
-            url = os.environ['WEBHOOK_API_URL']
-            GitHub_Token = os.environ['GITHUB_TOKEN']
+            if github_token is None:
+                url = os.environ['WEBHOOK_API_URL']
+                GitHub_Token = os.environ['GITHUB_TOKEN']
+            else:
+                # if github_token is present in the response use that.
+                # Build the url with repo_owner and repo_name
+                url = "https://api.github.com/repos/" + repo_owner + "/" + repo_name + "/dispatches"
+                GitHub_Token = github_token
+
             http = urllib3.PoolManager()
 
             data = {
