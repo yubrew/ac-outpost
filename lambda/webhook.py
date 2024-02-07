@@ -20,8 +20,13 @@ def lambda_handler(event, context):
     for item in response['Items']:
         job_id = item['job_id']
         prnum = item['prnum']
+        repo_owner = item['repo_owner']
+        repo_name = item['repo_name']
+
         print("job_id", job_id)
         print("prnum", prnum)
+        print("repo_owner", repo_owner)
+        print("repo_name", repo_name)
 
         # Call the API to get the status and data
         url = os.environ['API_URL']
@@ -50,6 +55,12 @@ def lambda_handler(event, context):
                 markdown = api_response['markdown']
             else:
                 markdown = ""
+
+            if "github_token" in api_response:
+                github_token = api_response['github_token']
+            else:
+                github_token = None
+
             response = table.update_item(
                 Key={
                     'job_id': job_id
@@ -65,8 +76,15 @@ def lambda_handler(event, context):
             )
 
             # Call GitHub webhook api.
-            url = os.environ['WEBHOOK_API_URL']
-            GitHub_Token = os.environ['GITHUB_TOKEN']
+            if github_token is None:
+                url = os.environ['WEBHOOK_API_URL']
+                GitHub_Token = os.environ['GITHUB_TOKEN']
+            else:
+                # if github_token is present in the response use that.
+                # Build the url with repo_owner and repo_name
+                url = "https://api.github.com/repos/" + repo_owner + "/" + repo_name + "/dispatches"
+                GitHub_Token = github_token
+
             http = urllib3.PoolManager()
 
             data = {

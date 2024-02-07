@@ -26,11 +26,16 @@ def lambda_handler(event, context):
     # Now you can access the values in the body_content_dict
     prnum = body_content_dict['prnum']
     file_content = body_content_dict['file_content']
+    repo_owner = body_content_dict['repo_owner']
+    repo_name = body_content_dict['repo_name']
+
     print("PRNUM", prnum)
     print("File Content", file_content)
+    print("Repo Owner", repo_owner)
+    print("Repo Name", repo_name)
 
     # Check if the prnum and file_content are not empty
-    if not prnum or not file_content:
+    if not prnum or not file_content or not repo_owner or not repo_name:
         return {
             'statusCode': 400,
             'body': json.dumps('Invalid input')
@@ -50,7 +55,9 @@ def lambda_handler(event, context):
             'prnum': prnum,
             'file_content': file_content,
             "status": "pending",
-            "reason": ""
+            "reason": "",
+            "repo_owner": repo_owner,
+            "repo_name": repo_name
         }
     )
     data = {

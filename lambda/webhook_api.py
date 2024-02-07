@@ -25,8 +25,13 @@ def lambda_handler(event, context):
     # Now you can access the values in the body_content_dict
     job_id = body_content_dict['job_id']
     prnum = body_content_dict['prnum']
+    repo_owner = body_content_dict['repo_owner']
+    repo_name = body_content_dict['repo_name']
+
     print("job_id", job_id)
     print("pr_num", prnum)
+    print("Repo Owner", repo_owner)
+    print("Repo Name", repo_name)
 
     # Check if the job_id and prnum is empty
     if not job_id or not prnum:
@@ -44,7 +49,9 @@ def lambda_handler(event, context):
             'job_id': job_id,
             'timestamp': str(datetime.now()),
             "status": "pending",
-            "prnum": prnum
+            "prnum": prnum,
+            "repo_owner": repo_owner,
+            "repo_name": repo_name
         }
     )
 
